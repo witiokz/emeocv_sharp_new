@@ -87,8 +87,6 @@ namespace Emeocv_Sharp
             // convert to gray
             _imgGray = _img.Convert<Gray, byte>();
 
-           
-
             // initial rotation to get the digits up
             Rotate(_config.rotationDegrees);
 
@@ -96,7 +94,6 @@ namespace Emeocv_Sharp
             float skew_deg = DetectSkew();
             Rotate(skew_deg);
 
-            _imgGray.Save("w.png");
 
             // find and isolate counter digits
             FindCounterDigits();
@@ -213,6 +210,7 @@ namespace Emeocv_Sharp
         {
             Mat edges = new Mat();
             CvInvoke.Canny(_imgGray, edges, _config.cannyThreshold1, _config.cannyThreshold2);
+
             return edges;
         }
 
@@ -221,6 +219,7 @@ namespace Emeocv_Sharp
         {
             var start = list[begin];
             result.Add(start);
+
             begin = begin + 1;
             for (var index = begin; index < end; index++)
             {
@@ -247,6 +246,8 @@ namespace Emeocv_Sharp
                 //{
                     boundingBoxes.Add(bounds);
                     filteredContours.Push(contours[i]);
+
+                    
                 }
             }
         }
@@ -269,13 +270,13 @@ namespace Emeocv_Sharp
             VectorOfVectorOfPoint filteredContours = new VectorOfVectorOfPoint();
 
             //Find contours
-            CvInvoke.FindContours(edges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
+            CvInvoke.FindContours(edges, contours, null, RetrType.External, ChainApproxMethod.ChainApproxNone);
 
             // filter contours by bounding rect size
             FilterContours(contours, boundingBoxes, filteredContours);
 
             //Draw contours
-            var backedUp = this._img.Clone();
+            var backedUp = _img.Clone();
             List<Rectangle> bounds = new List<Rectangle>();
             for (var i = 0; i < contours.Size; i++)
             {
@@ -321,7 +322,7 @@ namespace Emeocv_Sharp
             VectorOfVectorOfPoint filteredContours = new VectorOfVectorOfPoint();
 
             //Find contours
-            CvInvoke.FindContours(edges, contours, null, RetrType.List, ChainApproxMethod.ChainApproxNone);
+            CvInvoke.FindContours(edges, contours, null, RetrType.External, ChainApproxMethod.ChainApproxNone);
 
             // filter contours by bounding rect size
             FilterContours(contours, boundingBoxes, filteredContours);

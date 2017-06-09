@@ -1,6 +1,7 @@
 ﻿using EmeocvSharp;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using Emgu.CV.Util;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -21,10 +22,11 @@ namespace Emeocv_Sharp
         static void Main(string[] args)
         {
             //TestOcr(@"C:\Users\user\Desktop\test");
+            //return;
 
            using (ImageProcessor processor = new ImageProcessor())
             {
-                processor.SetInput(new Image<Bgr, byte>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"img\2.png")));
+                processor.SetInput(new Image<Bgr, byte>(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, @"img\00.png")));
                 processor.Process();
                 var t = processor.GetOutput();
             }
@@ -111,5 +113,30 @@ namespace Emeocv_Sharp
             }
         }
 
+    }
+
+    public class ContourWithData
+    {
+        // member variables
+        const int MIN_CONTOUR_AREA = 100;
+        //contour
+        public VectorOfPoint contour;
+        //bounding rect for contour
+        public Rectangle boundingRect;
+        //area of contour
+        public double dblArea;
+
+        public bool CheckIfContourIsValid()
+        {
+            //this is oversimplified, for a production grade program better validity checking would be necessary
+            if ((dblArea < MIN_CONTOUR_AREA))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }
